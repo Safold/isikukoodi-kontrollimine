@@ -1,69 +1,74 @@
-const submit = document.getElementById("check").addEventListener("click", meetsConditions);
+const button = document.getElementById("check").addEventListener("click", setToNumericArray);
 const result = document.getElementById("result");
+let idArray = [];
+
+//Make an array of the input and transform it into numbers
+function setToNumericArray(){
+		idArray = document.forms["controlForm"]["personalID"].value.split('').map(num => +num);
+		meetsConditions();
+}
 
 
-
-
-function checkID(id){
-	if(checkDate(id)){
-		let idArr = [];
+//Checks if ID is 11 characters long and consist only of digits
+function meetsConditions(){
+	result.innerHTML = "";
+	if(idArray.length !== 11){
+		result.innerHTML = "Personal ID length must be 11 numbers exactly and without special symbols";
+	}
+	else if(idArray.every(el => isNaN(el) == false)){
+		checkID();
+	}
+	else{
+		result.innerHTML = "Don't use any special symbols";
+	}
+}
+function checkID(){
+	if(checkDate()){
 		let sum = 0;
 		let i = 0;
-		for(let i in id){
-			idArr.push(id.substr(i, 1))
-			console.log(idArr);
-		}
 		while(i < 9){
-			sum += parseInt(idArr[i]) * (1+i)
+			sum += (idArray[i] * (1+i));
 			i++;
 		}
-		sum += parseInt(idArr[i]);
-		if(sum % 11 == idArr[10]){
+		sum += idArray[i];
+		if(sum % 11 == idArray[10]){
 			result.innerHTML = "ID is real"
-			console.log('pervii')
 		}
 		else{
 			i = 0;
 			sum = 0;
 			while(i < 10){
 				if(i < 7){
-					console.log(sum)
-					console.log(i);
-					sum += parseInt(idArr[i]) * (3+i);
-					console.log(sum)
+					sum += (idArray[i] * (3+i));
 					i++;
 
 				}
 				else{
-					sum += parseInt(idArr[i]) * (-6 + i);
+					sum += (idArray[i] * (-6 + i));
 					i++ 
 				}
 			}
-			console.log(sum)
-			if(sum % 11 == idArr[10]){
+			if(sum % 11 == idArray[10]){
 				result.innerHTML = "ID is real"
-				console.log('vtoroii')
 			}
 			else{
 				result.innerHTML = "Wrong ID";
 			}
+		}
 	}
 }
-}
 
 
 
-
-function checkDate(id){
-	let month = id.substr(3, 2);
-	let day = id.substr(5, 2);
-
-console.log(day > howManyDays(month))
+//check that date is valid
+function checkDate(){
+	let month = `${idArray[3]}${idArray[4]}`;
+	let day = `${idArray[5]}${idArray[6]}`;
 	if(month < 1 || month > 12 || day < 1){
 		result.innerHTML = "Wrong month input";
 	}
-	else if(isLeap(id) == true && month == 2 && day > 29){
-		result.innerHTML = "In february " + getYear(id) + " was only 29 day";
+	else if(isLeap() == false && month == 2 && day > 28){
+		result.innerHTML = "Wrong day or month input";
 	}
 	else if(day > howManyDays(month)){
 		result.innerHTML = "Wrong day or month input";
@@ -92,14 +97,14 @@ function howManyDays(month){
 		days = 30;
 		break;
 	default:
-		days = 28;
+		days = 29;
 		break;
 	}
 	return(days);
 }
 //check if year is leap
-function isLeap(year){
-	year = getYear(year);
+function isLeap(){
+	let year = getYear();
 	if(year % 4 != 0){
 		return(false);
 	}else if(year % 100 != 0){
@@ -111,47 +116,25 @@ function isLeap(year){
 	}
 }
 //Get the year out of ID
-function getYear(id){
+function getYear(){
 	let century;
 	let year;
-	switch(id.substr(0, 1)){
-		case "1":
-		case "2":
+	switch(idArray[0]){
+		case 1:
+		case 2:
 			century = 1800;
 			break;
-		case "3":
-		case "4":
+		case 3:
+		case 4:
 			century = 1900;
 			break;
-		case "5":
-		case "6":
+		case 5:
+		case 6:
 			century = 2000;
 			break;
 		default:
 			result.innerHTML = "Wrong input. The first digit must be between 1-6."
 	}
-	year = century + parseInt(id.substr(1, 2));
+	year = century + parseInt(`${idArray[1]}${idArray[2]}`);
 	return(year);
 }
-
-
-//Checks if ID is 11 characters long and consist only of digits
-function meetsConditions(){
-	result.innerHTML = "";
-	let personalID = document.forms["controlForm"]["personalID"].value;
-	if(personalID.length !== 11){
-		result.innerHTML = "Personal ID length must be 11 numbers exactly (without special symbols e.g. +-/* etc)";
-	}
-	else if(/^\d+$/.test(personalID)){
-		checkID(personalID);
-	}
-	else{
-		result.innerHTML = "unidentified error";
-	}
-}
-/*104 = 1804
-204 = 1804
-304 = 1904
-404 = 1904
-504 = 2004
-604 = 2004*/

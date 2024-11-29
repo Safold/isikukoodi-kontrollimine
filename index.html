@@ -8,12 +8,14 @@
 </head>
 <body>
 	<div id="app" >
-		<form name="controlForm">
+		<form name="controlForm" onkeydown="if(event.keyCode === 13){return false;}">
 			<label>Input Personal ID:</label>
-			<input type="number" name="personalID" required>
-			<button type="button" id="check">Submit</button></br></br>
+			<input type="number" name="personalID" id="id" required>
+			<button type="button" id="check">Submit</button>
+			<div class="result">
 			<label>Result: </label>
 			<label id="result"></label>
+			</div>
 		</form>
 	</div>
 
