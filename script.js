@@ -62,10 +62,11 @@ function checkID(){
 
 //check that date is valid
 function checkDate(){
+	if(getYear()){
 	let month = `${idArray[3]}${idArray[4]}`;
 	let day = `${idArray[5]}${idArray[6]}`;
 	if(month < 1 || month > 12 || day < 1){
-		result.innerHTML = "Wrong month input";
+		result.innerHTML = "Wrong month or day input";
 	}
 	else if(isLeap() == false && month == 2 && day > 28){
 		result.innerHTML = "Wrong day or month input";
@@ -76,7 +77,7 @@ function checkDate(){
 		return(true);
 	}
 	return(false);
-}
+}}
 
 
 function howManyDays(month){
